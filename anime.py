@@ -8,7 +8,9 @@ st.write("✅ Streamlit is running!")
 @st.cache_data
 def load_data():
     st.write("📥 Loading dataset...")
-    score = pd.read_csv("score.csv")
+    chunk_size = 100000
+    chunks = pd.read_csv("score.csv", chunksize=chunk_size)
+    score = pd.concat(chunks)
     st.write(f"✅ Loaded {len(score)} rows")
     return score
 
@@ -32,26 +34,42 @@ if anime_input:
     st.write(f"🔍 Searching recommendations for: {anime_input}")
     st.write("⚠️ Debug: Before recommendation function")
 
-    # Recommendation logic
-    def get_recommendations(anime_title, top_n=5):
-        anime_factors = learn.model.i_weight.weight
-        if anime_title not in dls.classes['Anime Title']:
-            return ["Anime not found in database."]
+#     # Recommendation logic
+#     def get_recommendations(anime_title, top_n=5):
+#         anime_factors = learn.model.i_weight.weight
+#         if anime_title not in dls.classes['Anime Title']:
+#             return ["Anime not found in database."]
         
-        idx = dls.classes['Anime Title'].o2i[anime_title]
-        distances = torch.nn.functional.cosine_similarity(anime_factors, anime_factors[idx][None])
-        sorted_indices = distances.argsort(descending=True)[1:top_n+1]
+#         idx = dls.classes['Anime Title'].o2i[anime_title]
+#         distances = torch.nn.functional.cosine_similarity(anime_factors, anime_factors[idx][None])
+#         sorted_indices = distances.argsort(descending=True)[1:top_n+1]
         
-        recommendations = [dls.classes['Anime Title'][i] for i in sorted_indices]
-        return recommendations
+#         recommendations = [dls.classes['Anime Title'][i] for i in sorted_indices]
+#         return recommendations
 
-    recommendations = get_recommendations(anime_input)
-    st.write("⚠️ Debug: After recommendation function")
+#     recommendations = get_recommendations(anime_input)
+#     st.write("⚠️ Debug: After recommendation function")
     
-    st.write("### Recommended Anime:")
-    for anime in recommendations:
-        st.write(f"- {anime}")
+#     st.write("### Recommended Anime:")
+#     for anime in recommendations:
+#         st.write(f"- {anime}")
 
+
+
+def get_recommendations(anime_title, top_n=5):
+    anime_factors = learn.model.i_weight.weight
+    if anime_title not in dls.classes['Anime Title'].items:
+        return ["Anime not found in database."]
+    
+    idx = dls.classes['Anime Title'].o2i.get(anime_title, None)
+    if idx is None:
+        return ["Anime not found in database."]
+    
+    distances = torch.nn.functional.cosine_similarity(anime_factors, anime_factors[idx][None])
+    sorted_indices = distances.argsort(descending=True)[1:top_n+1]
+    
+    recommendations = [dls.classes['Anime Title'].items[i] for i in sorted_indices]
+    return recommendations
 
 
 
