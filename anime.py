@@ -8,7 +8,7 @@ st.write("✅ Streamlit is running!")
 @st.cache_data
 def load_data():
     st.write("📥 Loading dataset...")
-    score = pd.read_csv("users-score-2023.csv")
+    score = pd.read_csv("score.csv")
     st.write(f"✅ Loaded {len(score)} rows")
     return score
 
