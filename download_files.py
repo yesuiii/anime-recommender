@@ -1,9 +1,8 @@
 import gdown
 
-# Replace with your actual Google Drive file IDs
 files = {
-    "anime_recommender_model.pkl": "1-CxYL_ePmUVw9qCkhDZVIdL1pwE-St82",
-    "users-score-2023.csv": "1-RiQJ2JrzxANZ1uBqiNi7WFdcjshdSZw",
+    "anime_recommender.pkl": "1-CxYL_ePmUVw9qCkhDZVIdL1pwE-St82",
+    "score.csv": "1-RiQJ2JrzxANZ1uBqiNi7WFdcjshdSZw",
 }
 
 for filename, file_id in files.items():
