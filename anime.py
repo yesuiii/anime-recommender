@@ -19,7 +19,7 @@ def load_model():
     st.write("📥 Loading model...")
     dls = CollabDataLoaders.from_df(score, user_name="user_id", item_name="Anime Title", rating_name="rating", bs=512)
     learn = collab_learner(dls, n_factors=50, y_range=(0, 5.5))
-    learn.load("anime_recommender_model", with_opt=False, strict=False)
+    learn.load("anime_recommender", with_opt=False, strict=False)
     st.write("✅ Model loaded successfully")
     return learn, dls
 
