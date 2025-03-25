@@ -8,7 +8,7 @@ from fastai.collab import CollabDataLoaders, collab_learner
 st.title("🎥 Anime Recommendation System")
 
 FILES = {
-    "anime_recommender.pkl": "1-CxYL_ePmUVw9qCkhDZVIdL1pwE-St82",
+    "anime_recommender_model.pkl": "1-CxYL_ePmUVw9qCkhDZVIdL1pwE-St82",
     "score.csv": "1-RiQJ2JrzxANZ1uBqiNi7WFdcjshdSZw",
 }
 
@@ -16,14 +16,12 @@ for filename, file_id in FILES.items():
     if not os.path.exists(filename):
         st.write(f"📥 Downloading {filename}...")
         gdown.download(f"https://drive.google.com/uc?id={file_id}", filename, quiet=False)
-        st.write(f"✅ {filename} downloaded!")
+        st.write(f"✅")
 
 @st.cache_data
 def load_data():
     st.write("📥 Loading dataset...")
-    chunk_size = 100000  # Adjust based on your dataset size
-    chunks = pd.read_csv("score.csv", chunksize=chunk_size)
-    score = pd.concat(chunks)
+    score = pd.read_csv("score.csv")
     st.write(f"✅ Loaded {len(score)} rows")
     return score
 
@@ -37,7 +35,7 @@ def load_model():
 
     try:
         learn.load("anime_recommender", with_opt=False)
-        st.write("✅ Model loaded successfully")
+        st.write("✅")
     except Exception as e:
         st.write(f"❌ Model loading failed: {e}")
     
