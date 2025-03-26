@@ -84,8 +84,8 @@ with st.spinner('Initializing app...'):
     st.title("🎥 Anime Recommendation System")
 
     FILES = {
-        "anime_recommender_model.pkl": "1-CxYL_ePmUVw9qCkhDZVIdL1pwE-St82",
-        "score.csv": "1-RiQJ2JrzxANZ1uBqiNi7WFdcjshdSZw",
+        "anime_recommender.pkl": "1PNgMiKTmal86DtNvaC22CKt9wSQk-LSP",
+        "score.csv": "1PNgMiKTmal86DtNvaC22CKt9wSQk-LSP",
     }
 
     @st.cache_data(show_spinner="Downloading required files...")
