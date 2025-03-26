@@ -134,7 +134,7 @@ with st.spinner('Initializing app...'):
                 bs=512
             )
             learn = collab_learner(dls, n_factors=50, y_range=(0, 5.5))
-            learn.load("anime_recommender_model", with_opt=False)
+            learn.load("anime_recommender", with_opt=False)
             return learn, dls
         except Exception as e:
             st.error(f"Failed to load model: {str(e)}")
