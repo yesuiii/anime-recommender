@@ -34,7 +34,7 @@ def load_model():
     learn = collab_learner(dls, n_factors=50, y_range=(0, 5.5))
 
     try:
-        learn.load("anime_recommender", with_opt=False)
+        learn.load("anime_recommender_model", with_opt=False)
         st.write("✅")
     except Exception as e:
         st.write(f"❌ Model loading failed: {e}")
@@ -46,7 +46,7 @@ learn, dls = load_model()
 def get_recommendations(anime_title, top_n=5):
     anime_factors = learn.model.i_weight.weight
     if anime_title not in dls.classes['Anime Title'].items:
-        return ["Anime not found in database."]
+        return ["Anime not found."]
     
     idx = dls.classes['Anime Title'].o2i.get(anime_title, None)
     if idx is None:
