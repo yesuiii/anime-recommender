@@ -11,7 +11,7 @@ st.title("🎥 Anime Recommendation System")
         "anime_recommender.pkl": "1-Zw0Z2MQFVBvNllFaaCGjP8j_5fM6crD",
         "score.csv": "1-a0_oGGimMSIolTZnVg7OWbv755shMxf",
     }
-
+gdown.download(f"https://drive.google.com/uc?id={file_id}", output=file_name, quiet=False)
 for filename, file_id in FILES.items():
     if not os.path.exists(filename):
         st.write(f"📥 Downloading {filename}...")
