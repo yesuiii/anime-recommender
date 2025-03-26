@@ -29,14 +29,18 @@ with st.spinner('Initializing app...'):
         st.error(f"Failed to load score data: {e}")
         st.stop()
 
+from fastai.learner import Learner
+from torch.serialization import add_safe_globals
+
 @st.cache_resource
 def load_model():
     try:
         dls = CollabDataLoaders.from_df(score, user_name="user_id", item_name="Anime Title", rating_name="rating", bs=512)
         learn = collab_learner(dls, n_factors=50, y_range=(0, 5.5))
         
-        # ✅ Load with weights_only=False (only if you trust the .pkl source!)
-        state_dict = torch.load("anime_recommender.pkl", map_location="cpu", weights_only=False)
+        # ✅ Allow Fastai's Learner class
+        with add_safe_globals([Learner]):
+            state_dict = torch.load("anime_recommender.pkl", map_location="cpu")
         learn.model.load_state_dict(state_dict)
         
         st.success("✅ Model loaded successfully!")
@@ -44,8 +48,6 @@ def load_model():
     except Exception as e:
         st.error(f"❌ Model loading failed: {e}")
         st.stop()
-
-learn, dls = load_model()
 
 def get_recommendations(anime_title, top_n=5):
     try:
