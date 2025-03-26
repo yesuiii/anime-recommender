@@ -12,9 +12,9 @@ with st.spinner('Initializing app...'):
     FILES = {
         "score.csv": "https://drive.google.com/uc?id=1-a0_oGGimMSIolTZnVg7OWbv755shMxf",
         "anime_recommender.pkl": "https://drive.google.com/uc?id=1-Zw0Z2MQFVBvNllFaaCGjP8j_5fM6crD",
-        
     }
 
+    # Download files
     for file_name, file_url in FILES.items():
         try:
             gdown.download(file_url, file_name, quiet=False)
@@ -33,6 +33,7 @@ with st.spinner('Initializing app...'):
 def load_model():
     st.write("📥 Loading model...")
     try:
+        # Create dataloaders
         dls = CollabDataLoaders.from_df(
             score, 
             user_name="user_id", 
@@ -40,10 +41,12 @@ def load_model():
             rating_name="rating", 
             bs=512
         )
+        
+        # Initialize learner
         learn = collab_learner(dls, n_factors=50, y_range=(0, 5.5))
         
-        # Load model weights
-        state_dict = torch.load("anime_recommender_model.pkl", map_location="cpu")
+        # Load model weights - CORRECTED FILE NAME HERE
+        state_dict = torch.load("anime_recommender.pkl", map_location="cpu")
         learn.model.load_state_dict(state_dict)
         
         st.write("✅ Model loaded successfully!")
@@ -84,84 +87,3 @@ if anime_input:
     st.write("### Recommended Anime:")
     for anime in recommendations:
         st.write(f"- {anime}")
-
-# import streamlit as st
-# import pandas as pd
-# import torch
-# import os
-# import gdown
-# from fastai.collab import CollabDataLoaders, collab_learner
-
-# # Set page config first
-# st.set_page_config(page_title="🎥 Anime Recommendation System", layout="wide")
-
-# # Show loading spinner immediately
-# with st.spinner('Initializing app...'):
-#     st.title("🎥 Anime Recommendation System")
-
-    # FILES = {
-    #     "anime_recommender.pkl": "1-Zw0Z2MQFVBvNllFaaCGjP8j_5fM6crD",
-    #     "score.csv": "1-a0_oGGimMSIolTZnVg7OWbv755shMxf",
-    # }
-
-    # @st.cache_data(show_spinner="Downloading required files...")
-    # def download_files():
-    #     for filename, file_id in FILES.items():
-    #         if not os.path.exists(filename):
-    #             try:
-    #                 gdown.download(f"https://drive.google.com/uc?id={file_id}", filename, quiet=True)
-    #             except Exception as e:
-    #                 st.error(f"Failed to download {filename}: {str(e)}")
-    #                 raise
-    #     return True
-
-    # try:
-    #     download_files()
-    # except:
-    #     st.error("Failed to download required files. Please check your internet connection.")
-    #     st.stop()
-
-    # @st.cache_data(show_spinner="Loading dataset...", ttl=3600)
-    # def load_data():
-    #     try:
-    #         score = pd.read_csv("score.csv")
-    #         # Optimize memory usage
-    #         score['user_id'] = score['user_id'].astype('int32')
-    #         score['rating'] = score['rating'].astype('float32')
-    #         return score
-    #     except Exception as e:
-    #         st.error(f"Failed to load dataset: {str(e)}")
-    #         raise
-
-    # try:
-    #     score = load_data()
-    #     st.success(f"✅ Loaded {len(score):,} rows")
-    # except:
-    #     st.stop()
-
-    # @st.cache_resource(show_spinner="Loading recommendation model...")
-    # def load_model():
-    #     try:
-    #         dls = CollabDataLoaders.from_df(
-    #             score, 
-    #             user_name="user_id", 
-    #             item_name="Anime Title", 
-    #             rating_name="rating", 
-    #             bs=512
-    #         )
-    #         learn = collab_learner(dls, n_factors=50, y_range=(0, 5.5))
-    #         learn.load("anime_recommender", with_opt=False)
-    #         return learn, dls
-    #     except Exception as e:
-    #         st.error(f"Failed to load model: {str(e)}")
-    #         raise
-
-    # try:
-    #     learn, dls = load_model()
-    #     st.success("✅ Model loaded successfully")
-    # except:
-    #     st.stop()
-
-
-
-
