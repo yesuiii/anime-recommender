@@ -10,8 +10,9 @@ with st.spinner('Initializing app...'):
     st.title("🎥 Anime Recommendation System")
 
     FILES = {
-        "anime_recommender.pkl": "https://drive.google.com/uc?id=1-Zw0Z2MQFVBvNllFaaCGjP8j_5fM6crD",
         "score.csv": "https://drive.google.com/uc?id=1-a0_oGGimMSIolTZnVg7OWbv755shMxf",
+        "anime_recommender.pkl": "https://drive.google.com/uc?id=1-Zw0Z2MQFVBvNllFaaCGjP8j_5fM6crD",
+        
     }
 
     for file_name, file_url in FILES.items():
