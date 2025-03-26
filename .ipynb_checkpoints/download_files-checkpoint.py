@@ -11,7 +11,7 @@ with st.spinner('Initializing app...'):
 
     FILES = {
         "score.csv": "https://drive.google.com/uc?id=1-a0_oGGimMSIolTZnVg7OWbv755shMxf",
-        "anime_recommender.pkl": "https://drive.google.com/uc?id=1PNgMiKTmal86DtNvaC22CKt9wSQk-LSP",
+        "anime_recommender_model.pkl": "https://drive.google.com/uc?id=1PNgMiKTmal86DtNvaC22CKt9wSQk-LSP",
         
     }
 
