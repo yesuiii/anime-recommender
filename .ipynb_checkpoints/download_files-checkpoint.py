@@ -43,7 +43,7 @@ def load_model():
         learn = collab_learner(dls, n_factors=50, y_range=(0, 5.5))
         
         # Load model weights
-        state_dict = torch.load("anime_recommender.pkl", map_location="cpu")
+        state_dict = torch.load("anime_recommender_model.pkl", map_location="cpu")
         learn.model.load_state_dict(state_dict)
         
         st.write("✅ Model loaded successfully!")
