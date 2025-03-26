@@ -6,9 +6,9 @@ from fastai.tabular.all import *
 from fastai.collab import CollabDataLoaders
 from fastai.learner import load_learner
 
-score = pd.read_csv('users-score-2023.csv')
+score = pd.read_csv('score.csv')
 
-model_path = "anime_recommender_model.pkl"
+model_path = "anime_recommender.pkl"
 learn = load_learner(model_path)
 
 def main():
