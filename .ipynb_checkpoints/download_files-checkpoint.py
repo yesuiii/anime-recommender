@@ -5,25 +5,23 @@ import os
 import gdown
 from fastai.collab import CollabDataLoaders, collab_learner
 
-st.title("🎥 Anime Recommendation System")
 
-  FILES = {
-        "anime_recommender.pkl": "1-Zw0Z2MQFVBvNllFaaCGjP8j_5fM6crD",
-        "score.csv": "1-a0_oGGimMSIolTZnVg7OWbv755shMxf",
+st.set_page_config(page_title="🎥 Anime Recommendation System", layout="wide")
+
+with st.spinner('Initializing app...'):
+    st.title("🎥 Anime Recommendation System")
+
+    FILES = {
+        "anime_recommender.pkl": "https://drive.google.com/uc?id=1-Zw0Z2MQFVBvNllFaaCGjP8j_5fM6crD",
+        "score.csv": "https://drive.google.com/uc?id=1-a0_oGGimMSIolTZnVg7OWbv755shMxf",
     }
-gdown.download(f"https://drive.google.com/uc?id={file_id}", output=file_name, quiet=False)
-for filename, file_id in FILES.items():
-    if not os.path.exists(filename):
-        st.write(f"📥 Downloading {filename}...")
-        gdown.download(f"https://drive.google.com/uc?id={file_id}", filename, quiet=False)
-        st.write(f"✅")
 
-@st.cache_data
-def load_data():
-    st.write("📥 Loading dataset...")
-    score = pd.read_csv("score.csv")
-    st.write(f"✅ Loaded {len(score)} rows")
-    return score
+    for file_name, file_url in FILES.items():
+        try:
+            gdown.download(file_url, file_name, quiet=False)
+        except Exception as e:
+            st.error(f"Failed to download {file_name}: {str(e)}")
+            st.stop()
 
 score = load_data()
 
