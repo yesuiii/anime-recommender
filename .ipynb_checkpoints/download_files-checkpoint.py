@@ -31,25 +31,15 @@ with st.spinner('Initializing app...'):
 
 @st.cache_resource
 def load_model():
-    st.write("📥 Loading model...")
     try:
-        # Create dataloaders
-        dls = CollabDataLoaders.from_df(
-            score, 
-            user_name="user_id", 
-            item_name="Anime Title", 
-            rating_name="rating", 
-            bs=512
-        )
-        
-        # Initialize learner
+        dls = CollabDataLoaders.from_df(score, user_name="user_id", item_name="Anime Title", rating_name="rating", bs=512)
         learn = collab_learner(dls, n_factors=50, y_range=(0, 5.5))
         
-        # Load model weights - CORRECTED FILE NAME HERE
-        state_dict = torch.load("anime_recommender.pkl", map_location="cpu")
+        # ✅ Load with weights_only=False (only if you trust the .pkl source!)
+        state_dict = torch.load("anime_recommender.pkl", map_location="cpu", weights_only=False)
         learn.model.load_state_dict(state_dict)
         
-        st.write("✅ Model loaded successfully!")
+        st.success("✅ Model loaded successfully!")
         return learn, dls
     except Exception as e:
         st.error(f"❌ Model loading failed: {e}")
