@@ -97,8 +97,7 @@ def load_model_and_dls(score_df, model_filename="anime_recommender.pkl", model_u
     try:
         if SAFE_GLOBALS_AVAILABLE:
              st.write("Attempting Solution 2: Load with add_safe_globals...")
-             # This context manager allows controlled unpickling of specific classes
-             with add_safe_globals([Learner]): # Add other necessary fastai/custom classes if needed
+             with add_safe_globals([Learner]):
               
                  state_dict = torch.load(model_filename, map_location="cpu")
              learn.model.load_state_dict(state_dict)
@@ -106,7 +105,7 @@ def load_model_and_dls(score_df, model_filename="anime_recommender.pkl", model_u
              return learn, dls
         else:
              st.warning("Skipping Solution 2 because add_safe_globals is not available.")
-             raise RuntimeError("add_safe_globals not found, cannot use Solution 2.") # Force trying Solution 3 if needed
+             raise RuntimeError("add_safe_globals not found, cannot use Solution 2.") 
 
     except Exception as e:
         st.error(f"❌ Model loading failed: {e}")
@@ -120,63 +119,56 @@ def load_model_and_dls(score_df, model_filename="anime_recommender.pkl", model_u
         st.stop()
         return None, None
 
-# --- Actually call the function to load the model ---
+
 learn, dls = load_model_and_dls(score)
 
-# Check if loading was successful before proceeding
+
 if learn is None or dls is None:
     st.error("Model and DataLoaders could not be loaded. Cannot proceed with recommendations.")
     st.stop()
 
-def get_recommendations(input_anime_title, top_n=10): # Increased default recommendations
+def get_recommendations(input_anime_title, top_n=10): 
     try:
-        # Ensure input is treated as string and handle potential non-string input gracefully
+        
         input_anime_title = str(input_anime_title).strip()
         if not input_anime_title:
             return ["Please enter an anime title."]
 
         input_anime_title_lower = input_anime_title.lower()
-        all_titles = list(dls.classes['Anime Title']) # Convert Index to list for easier handling
+        all_titles = list(dls.classes['Anime Title']) 
         all_titles_lower = [str(title).lower() for title in all_titles]
 
         if input_anime_title_lower not in all_titles_lower:
-            # Suggest similar titles if not found? (Optional)
-            # E.g., use fuzzywuzzy or difflib
+          
             return [f"Anime '{input_anime_title}' not found in the database."]
 
-        # Find the index of the input anime (case-insensitive)
+        
         idx = all_titles_lower.index(input_anime_title_lower)
 
-        # Get item embeddings (factors)
-        anime_factors = learn.model.i_weight.weight # Accessing item embeddings
+       
+        anime_factors = learn.model.i_weight.weight 
 
-        # Calculate cosine similarity
-        target_vector = anime_factors[idx].unsqueeze(0) # Keep it as a row vector [1, n_factors]
-        distances = torch.nn.functional.cosine_similarity(target_vector, anime_factors) # Compare target to all others
+        
+        target_vector = anime_factors[idx].unsqueeze(0) 
+        distances = torch.nn.functional.cosine_similarity(target_vector, anime_factors) 
 
-        # Get top N similar anime indices
-        # We sort descending, the first element (index 0) will be the input anime itself with similarity 1.0
-        # So we take indices from 1 to top_n + 1
+      
         sorted_indices = distances.argsort(descending=True)[1 : top_n + 1]
 
-        # Get the corresponding anime titles
+ 
         recommended_titles = [all_titles[i] for i in sorted_indices]
         return recommended_titles
 
     except Exception as e:
         st.error(f"Error generating recommendations: {e}")
-        # You might want more specific error handling here
+      
         return ["An error occurred while generating recommendations."]
 
-# ======================
-# USER INTERFACE
-# ======================
+
 st.markdown("---") # Separator
 st.header("Get Anime Recommendations")
 
-# Use a selectbox or autocomplete for better UX if the list isn't too large
-# For now, using text input
-# Add a placeholder for instruction
+#
 anime_input = st.text_input("Enter an anime title you like:", placeholder="e.g., Naruto, Death Note, Attack on Titan")
 
 if anime_input:
@@ -188,18 +180,13 @@ if anime_input:
         for i, anime in enumerate(recommendations):
             st.write(f"{i+1}. {anime}")
     else:
-        st.warning(recommendations[0]) # Show the message (not found, error, etc.)
+        st.warning(recommendations[0])
 
-
-# ======================
-# DEBUGGING SECTION (Optional)
-# ======================
 with st.expander("Debug/Info Section"):
     st.write("#### Model Info:")
     if learn:
-         st.write("Model Architecture Snippet:", str(learn.model)[:500] + "...") # Show only part of the model string
-         # You can add more specific info like n_factors if needed
-         # st.write(f"Number of factors: {learn.model.i_weight.weight.shape[1]}")
+         st.write("Model Architecture Snippet:", str(learn.model)[:500] + "...") 
+         
     else:
         st.write("Model not loaded.")
 
